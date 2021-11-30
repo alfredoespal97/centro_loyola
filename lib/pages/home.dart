@@ -1,3 +1,5 @@
+import 'package:centroloyolapp/database/database.dart';
+import 'package:centroloyolapp/models/registro_model.dart';
 import 'package:centroloyolapp/pages/add_registro.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,21 +23,50 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Widget _buildRegistro(int index){
+
+
+  late Future<List<Registro>> _registroList;
+
+  DatabaseHelper _databaseHelper=DatabaseHelper.instance;
+
+
+  @override
+  void initState(){
+    super.initState();
+    _updateRegistroList();
+  }
+
+  _updateRegistroList(){
+    _registroList=DatabaseHelper.instance.getRegistroList();
+  }
+
+
+
+  Widget _buildRegistro(Registro registro){
     return Padding(
         padding:EdgeInsets.symmetric(horizontal: 25.0),
         child:Column(
           children: <Widget>[
             ListTile(
-              title:Text('Regitro Title'),
-              subtitle: Text('Nov 16,2021'),
-              trailing: Checkbox(
-                onChanged: (value){
-                  print(value);
-                },
-                activeColor: Theme.of(context).primaryColor,
-                value: true,
-              ),
+              title:Text(registro.nombre!, style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.white,
+              ),),
+              subtitle: Text(registro.grado! +' '+registro.curso!, style: TextStyle(
+                fontSize: 12.0,
+                color: Colors.white,
+              ),),
+              onTap:()=>Navigator.push(context, CupertinoPageRoute(builder: (_)=> AddRegistroPage(
+                  updateRegistroList: _updateRegistroList(),
+                  registro: registro,
+              ))),
+//              trailing: Checkbox(
+//                onChanged: (value){
+//                  print(value);
+//                },
+//                activeColor: Theme.of(context).primaryColor,
+//                value: true,
+//              ),
             ),
             Divider( height: 5.0,),
           ],
@@ -51,7 +82,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: (){
-          Navigator.push(context,CupertinoPageRoute(builder: (_)=>AddRegistroPage(),));
+          Navigator.push(context,CupertinoPageRoute(builder: (_)=>AddRegistroPage(
+            updateRegistroList: _updateRegistroList,
+          ),));
         },
         child: Icon(Icons.add),
 
@@ -60,39 +93,51 @@ class _MyHomePageState extends State<MyHomePage> {
 //        title: const Text('Centro Loyola'),
 //
 //      ),
-      body:ListView.builder(
-          padding:EdgeInsets.symmetric(vertical: 80.0),
-          itemCount: 10,
-          itemBuilder: (BuildContext context,int index){
-            if(index==0){
-              return Padding(
-                padding: EdgeInsets.symmetric(horizontal: 40.0,vertical: 20.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Mis Registros',style:
-                      TextStyle(color:Colors.blue,fontSize: 40.0, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 10.0,),
-                      Text(
-                        '0-10',style:
-                      TextStyle(color:Colors.blue,fontSize: 20.0, fontWeight: FontWeight.w600),
-                      ),
-                    ]
-                ),
-              );
-            }
-            return _buildRegistro(index);
-          }
-      ),
-      // To work with lists that may contain a large number of items, it’s best
-      // to use the ListView.builder constructor.
-      //
-      // In contrast to the default ListView constructor, which requires
-      // building all Widgets up front, the ListView.builder constructor lazily
-      // builds Widgets as they’re scrolled into view.
+      body:FutureBuilder(
 
+        future: _registroList,
+      builder: (context, AsyncSnapshot snapshot) {
+          if(!snapshot.hasData){
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          final int completeRegistroCount=snapshot.data!.where((Registro registro)=>registro.id!=null).toList.length;
+
+        return ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: 80.0),
+            itemCount: int.parse(snapshot.data!.length.toString()) + 1,
+            itemBuilder: (BuildContext context, int index) {
+              if (index == 0) {
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 40.0, vertical: 20.0),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          'Mis Registros', style:
+                        TextStyle(color: Colors.blue,
+                            fontSize: 40.0,
+                            fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10.0,),
+                        Text(
+                          '0-10', style:
+                        TextStyle(color: Colors.blue,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600),
+                        ),
+                      ]
+                  ),
+                );
+              }
+              return _buildRegistro(snapshot.data![index-1]);
+            }
+        );
+      }
+    ),
     );
   }
 }

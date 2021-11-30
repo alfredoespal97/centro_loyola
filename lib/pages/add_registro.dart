@@ -1,7 +1,14 @@
+import 'package:centroloyolapp/database/database.dart';
+import 'package:centroloyolapp/models/registro_model.dart';
 import 'package:centroloyolapp/pages/home.dart';
 import 'package:flutter/material.dart';
 
 class AddRegistroPage extends StatefulWidget {
+  final Registro? registro;
+  final Function? updateRegistroList;
+
+  AddRegistroPage({this.registro, this.updateRegistroList});
+
   @override
   _AddRegistroPageState createState() => _AddRegistroPageState();
 }
@@ -10,6 +17,8 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
 
   final _formKey=GlobalKey<FormState>();
 
+  String _title='';
+  String _curso='';
   String _grado='Primer Grado';
   String titleText='Agregar Registro';
 
@@ -18,10 +27,64 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
   'Septimo Grado','Octavo Grado','Noveno Grado'];
 
   @override
+  void initState(){
+    super.initState();
+
+    if(widget.registro != null){
+      _title=widget.registro!.nombre!;
+      _grado=widget.registro!.grado!;
+      _curso=widget.registro!.curso!;
+
+      setState(() {
+        titleText='Actualiazar Registro';
+      });
+    }
+    else{
+      setState(() {
+        titleText='Agregar Registro';
+      });
+    }
+
+
+  }
+
+  _submit(){
+    if(_formKey.currentState!.validate()){
+      _formKey.currentState!.save();
+      print('$_title,$_grado,$_curso ');
+
+      Registro registro=Registro(nombre: _title,grado: _grado,curso: _curso );
+
+      if(widget.registro ==null){
+          DatabaseHelper.instance.insertRegistro(registro);
+
+          Navigator.pushReplacement(
+            context,
+           MaterialPageRoute(
+            builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+          ),
+          );
+      }
+      else{
+          registro.id=widget.registro!.id;
+          DatabaseHelper.instance.updateRegistro(registro);
+          Navigator.pushReplacement(
+            context,
+              MaterialPageRoute(
+                builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+            ),
+          );
+      }
+
+      widget.updateRegistroList!();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: GestureDetector(
-        onTap: (){},
+        onTap: ()=>FocusScope.of(context).unfocus(),
         child: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.symmetric(horizontal:40.0,vertical: 80.0 ),
@@ -63,11 +126,19 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
+                            validator: (input)=>
+                             input!.trim().isEmpty ? 'Por favor inserte un nombre para le registro': null,
+                            onSaved: (input)=>_title=input!,
+                            initialValue: _title,
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 20.0),
                           child: DropdownButtonFormField(
+                            isDense: true,
+                            icon: Icon(Icons.arrow_drop_down_circle),
+                            iconSize: 22.0,
+                            iconEnabledColor: Theme.of(context).primaryColor,
                             items: _grados.map((String grado){
                               return DropdownMenuItem(
                                 value: grado,
@@ -88,6 +159,7 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
+                            validator: (input)=>_grado==null ? 'Por favor seleccione un grado':null,
                             onChanged: (value){
                               setState((){
                                 _grado=value.toString();
@@ -109,6 +181,8 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                             ),
+                            onSaved: (input)=>_curso=input!,
+                            initialValue: _curso,
                           ),
                         ),
                         Container(
@@ -121,7 +195,7 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
                           ),
                           child:ElevatedButton(
                             child: Text(titleText,style:TextStyle(color:Colors.white,fontSize: 20.0)),
-                            onPressed: (){},
+                            onPressed: _submit,
                           ),
                         )
                       ]
