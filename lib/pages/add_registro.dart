@@ -44,9 +44,13 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
         titleText='Agregar Registro';
       });
     }
-
-
   }
+
+  _delete(){
+  DatabaseHelper.instance.deleteRegistro(widget.registro!.id!);
+  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MyHomePage(title: 'Centro Loyola',)));
+  widget.updateRegistroList!();
+}
 
   _submit(){
     if(_formKey.currentState!.validate()){
@@ -79,6 +83,8 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
       widget.updateRegistroList!();
     }
   }
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -127,7 +133,7 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
                               ),
                             ),
                             validator: (input)=>
-                             input!.trim().isEmpty ? 'Por favor inserte un nombre para le registro': null,
+                             input!.trim().isEmpty ? 'Por favor inserte un nombre para el registro': null,
                             onSaved: (input)=>_title=input!,
                             initialValue: _title,
                           ),
@@ -197,7 +203,22 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
                             child: Text(titleText,style:TextStyle(color:Colors.white,fontSize: 20.0)),
                             onPressed: _submit,
                           ),
-                        )
+                        ),
+                        widget.registro != null ?
+                            Container(
+                              margin:EdgeInsets.symmetric(vertical:20.0),
+                              height: 60.0,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color:Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              child:ElevatedButton(
+                                child: Text("Eliminar Registro",style:TextStyle(color:Colors.white,fontSize: 20.0)),
+                                onPressed: _delete,
+                              ),
+                            )
+                            : SizedBox.shrink(),
                       ]
                   ),
                 ),

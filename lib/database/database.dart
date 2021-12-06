@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:centroloyolapp/models/estudiante_model.dart';
 import 'package:centroloyolapp/models/registro_model.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -10,12 +11,25 @@ class DatabaseHelper{
 
   DatabaseHelper._instance();
 
-
   String registroTable= 'registro_table';
   String colId= 'id';
   String colNombre= 'nombre';
   String colGrado= 'grado';
   String colCurso= 'curso';
+
+  String estudianteTable= 'estudiante_table';
+  String colIdEst= 'id';
+  String colNombreEst= 'nombre';
+  String colApellidos= 'apellidos';
+  String colEdad= 'edad';
+  String colEscuela='escuela';
+  String colNumeroPadre='numero_padre';
+  String colNumeroMadre='numero_madre';
+  String colNumeroOtro ='numero_otro';
+  String colDireccion='direccion';
+  String colNota='nota';
+  String colIdRegistro='id_registro';
+
 
 
   Future<Database?> get db async{
@@ -37,11 +51,13 @@ class DatabaseHelper{
 
   void _createDb(Database db, int version) async{
       await db.execute(
-        'CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT )'
+        'CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT ) '
+            'CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER TEXT, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE )'
+
       );
   }
 
-
+    //// Registro ////
   Future<List<Map<String,dynamic>>> getRegistroMapList() async{
     Database? db= await this.db;
     final List<Map<String,dynamic>> result= await db!.query(registroTable);
@@ -62,11 +78,9 @@ class DatabaseHelper{
 
   Future<int> insertRegistro(Registro registro) async{
     Database? db = await this.db;
-    final int result= await db!.update(
+    final int result= await db!.insert(
     registroTable,
     registro.toMap(),
-    where: '$colId = ?',
-    whereArgs: [registro.id]
     );
 
     return result;
@@ -92,6 +106,60 @@ class DatabaseHelper{
     registroTable,
     where: '$colId = ?',
     whereArgs: [id]
+    );
+
+    return result;
+  }
+
+  //// Estudiante ////
+  Future<List<Map<String,dynamic>>> getEstudianteMapList() async{
+    Database? db= await this.db;
+    final List<Map<String,dynamic>> result= await db!.query(estudianteTable);
+    return result;
+  }
+
+  Future<List<Estudiante>> getEstudianteList() async{
+    final List<Map<String,dynamic>> estudianteMapList= await getEstudianteMapList();
+
+    final List<Estudiante> estudianteList=[];
+
+    estudianteMapList.forEach((estudianteMap){
+      estudianteList.add(Estudiante.fromMap(estudianteMap));
+    });
+
+    return estudianteList;
+  }
+
+  Future<int> insertEstudiante(Estudiante estudiante) async{
+    Database? db = await this.db;
+    final int result= await db!.insert(
+      estudianteTable,
+      estudiante.toMap(),
+    );
+
+    return result;
+  }
+
+
+  Future<int> updateEstudiante(Estudiante estudiante) async{
+    Database? db = await this.db;
+    final int result= await db!.update(
+        estudianteTable,
+        estudiante.toMap(),
+        where: '$colIdEst = ?',
+        whereArgs: [estudiante.id]
+    );
+
+    return result;
+  }
+
+
+  Future<int> deleteEstudiante(int id) async{
+    Database? db = await this.db;
+    final int result= await db!.delete(
+        estudianteTable,
+        where: '$colIdEst = ?',
+        whereArgs: [id]
     );
 
     return result;

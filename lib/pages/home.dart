@@ -50,11 +50,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ListTile(
               title:Text(registro.nombre!, style: TextStyle(
                 fontSize: 18.0,
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
               ),),
               subtitle: Text(registro.grado! +' '+registro.curso!, style: TextStyle(
                 fontSize: 12.0,
-                color: Colors.white,
+                color: Theme.of(context).primaryColor,
               ),),
               onTap:()=>Navigator.push(context, CupertinoPageRoute(builder: (_)=> AddRegistroPage(
                   updateRegistroList: _updateRegistroList(),
@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           }
 
-          final int completeRegistroCount=snapshot.data!.where((Registro registro)=>registro.id!=null).toList.length;
+          //final int completeRegistroCount=snapshot.data!.where((Registro registro)=>registro.id!=null).toList.length;
 
         return ListView.builder(
             padding: EdgeInsets.symmetric(vertical: 80.0),
@@ -124,7 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                         SizedBox(height: 10.0,),
                         Text(
-                          '0-10', style:
+                          '${snapshot.data!.length}', style:
                         TextStyle(color: Colors.blue,
                             fontSize: 20.0,
                             fontWeight: FontWeight.w600),
