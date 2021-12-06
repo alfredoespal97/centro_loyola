@@ -5,10 +5,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddEstudiantePage extends StatefulWidget{
+  final int? id_registro;
   final Estudiante? estudiante;
   final Function? updateEstudianteList;
 
-  AddEstudiantePage({this.estudiante, this.updateEstudianteList});
+  AddEstudiantePage({this.estudiante, this.updateEstudianteList, this.id_registro});
 
   @override
   State<StatefulWidget> createState() => _AddEstudiantePageState();
@@ -44,7 +45,7 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
       _numeroOtro=widget.estudiante!.numero_otro!;
       _direccion=widget.estudiante!.direccion!;
       _nota=widget.estudiante!.nota!;
-
+      _idRegistro=widget.id_registro!;
       setState(() {
         titleText='Actualiazar Estudiante';
       });

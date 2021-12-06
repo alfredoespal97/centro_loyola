@@ -5,7 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomeEstudiantePage extends StatefulWidget{
-  HomeEstudiantePage({Key? key}) : super(key: key);
+  final int? idRegistro;
+  HomeEstudiantePage({this.idRegistro});
 
   @override
   State<HomeEstudiantePage> createState() => _HomeEstudiantePageState();
@@ -16,12 +17,13 @@ class _HomeEstudiantePageState extends State<HomeEstudiantePage>{
   late Future<List<Estudiante>> _estudianteList;
 
   DatabaseHelper _databaseHelper=DatabaseHelper.instance;
-
+  int? id_regitro;
 
   @override
   void initState(){
     super.initState();
     _updateEstudianteList();
+    id_regitro=widget.idRegistro;
   }
 
   _updateEstudianteList(){
@@ -46,6 +48,7 @@ class _HomeEstudiantePageState extends State<HomeEstudiantePage>{
               onTap:()=>Navigator.push(context, CupertinoPageRoute(builder: (_)=> AddEstudiantePage(
                 updateEstudianteList: _updateEstudianteList(),
                 estudiante: estudiante,
+                id_registro: id_regitro,
               ))),
 //              trailing: Checkbox(
 //                onChanged: (value){
@@ -66,6 +69,19 @@ class _HomeEstudiantePageState extends State<HomeEstudiantePage>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(
+            Icons.arrow_back,
+              color: Theme.of(context).primaryColor,
+            ),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: (){
@@ -84,9 +100,7 @@ class _HomeEstudiantePageState extends State<HomeEstudiantePage>{
                 child: CircularProgressIndicator(),
               );
             }
-
             //final int completeRegistroCount=snapshot.data!.where((Registro registro)=>registro.id!=null).toList.length;
-
             return ListView.builder(
                 padding: EdgeInsets.symmetric(vertical: 80.0),
                 itemCount: int.parse(snapshot.data!.length.toString()) + 1,

@@ -1,6 +1,7 @@
 import 'package:centroloyolapp/database/database.dart';
 import 'package:centroloyolapp/models/registro_model.dart';
 import 'package:centroloyolapp/pages/add_registro.dart';
+import 'package:centroloyolapp/pages/home_estudiante.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -56,10 +57,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontSize: 12.0,
                 color: Theme.of(context).primaryColor,
               ),),
-              onTap:()=>Navigator.push(context, CupertinoPageRoute(builder: (_)=> AddRegistroPage(
-                  updateRegistroList: _updateRegistroList(),
-                  registro: registro,
-              ))),
+              onTap:()=>Navigator.push(context, CupertinoPageRoute(builder: (_)=> HomeEstudiantePage(idRegistro: registro.id))),
 //              trailing: Checkbox(
 //                onChanged: (value){
 //                  print(value);
