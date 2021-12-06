@@ -50,11 +50,41 @@ class DatabaseHelper{
   }
 
   void _createDb(Database db, int version) async{
-      await db.execute(
-        'CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT ) '
-            'CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER TEXT, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE )'
 
-      );
+    Batch batch = db.batch();
+
+    // drop first
+
+//    batch.execute("DROP TABLE IF EXISTS $registroTable ;");
+//    batch.execute("DROP TABLE IF EXISTS $estudianteTable ;");
+    // then create again
+    batch.execute("CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT )");
+    batch.execute("CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE )");
+
+    List<dynamic> result = await batch.commit();
+
+//      await db.execute(
+//        'CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT );'
+//      );
+//      await db.execute(
+//          'CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE );'
+//      );
+  }
+
+  void _onUpgrade( Database db, int oldVersion, int newVersion ) async {
+
+    Batch batch = db.batch();
+
+    // drop first
+
+    batch.execute("DROP TABLE IF EXISTS $registroTable ;");
+    batch.execute("DROP TABLE IF EXISTS $estudianteTable ;");
+    // then create again
+    batch.execute("CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT )");
+    batch.execute("CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE )");
+
+    List<dynamic> result = await batch.commit();
+
   }
 
     //// Registro ////

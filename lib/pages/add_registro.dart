@@ -62,21 +62,32 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
       if(widget.registro ==null){
           DatabaseHelper.instance.insertRegistro(registro);
 
-          Navigator.pushReplacement(
-            context,
-           MaterialPageRoute(
-            builder: (_)=>MyHomePage(title: 'Centro Loyola',)
-          ),
+//          Navigator.pushReplacement(
+//            context,
+//           MaterialPageRoute(
+//            builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+//          ),
+//          );
+          Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(
+          builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+          ),(route) => false
           );
+
       }
       else{
           registro.id=widget.registro!.id;
           DatabaseHelper.instance.updateRegistro(registro);
-          Navigator.pushReplacement(
-            context,
-              MaterialPageRoute(
-                builder: (_)=>MyHomePage(title: 'Centro Loyola',)
-            ),
+//          Navigator.pushReplacement(
+//            context,
+//              MaterialPageRoute(
+//                builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+//            ),
+//          );
+          Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(
+          builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+          ),(route) => false
           );
       }
 
@@ -98,7 +109,7 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onTap: ()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> MyHomePage(title: 'Centro Loyola'),)),
+                  onTap: ()=>Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> MyHomePage(title: 'Centro Loyola'),),(route) => false),
                   child: Icon(
                     Icons.arrow_back,
                     size: 30.0,

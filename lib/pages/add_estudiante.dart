@@ -84,21 +84,31 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
       if(widget.estudiante ==null){
         DatabaseHelper.instance.insertEstudiante(estudiante);
 
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (_) => HomeEstudiantePage()
-          ),
+//        Navigator.pushReplacement(
+//          context,
+//          MaterialPageRoute(
+//              builder: (_) => HomeEstudiantePage()
+//          ),
+//        );
+        Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(
+        builder: (_)=>HomeEstudiantePage()
+        ),(route) => false
         );
       }
       else{
         estudiante.id=widget.estudiante!.id;
         DatabaseHelper.instance.updateEstudiante(estudiante);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (_) => HomeEstudiantePage()
-          ),
+//        Navigator.pushReplacement(
+//          context,
+//          MaterialPageRoute(
+//              builder: (_) => HomeEstudiantePage()
+//          ),
+//        );
+        Navigator.pushAndRemoveUntil(context,
+        MaterialPageRoute(
+        builder: (_)=>HomeEstudiantePage()
+        ),(route) => false
         );
       }
 
@@ -119,7 +129,7 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onTap: ()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> HomeEstudiantePage(),)),
+                  onTap: ()=>Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> HomeEstudiantePage(),),(route) => false),
                   child: Icon(
                     Icons.arrow_back,
                     size: 30.0,

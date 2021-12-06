@@ -1,6 +1,7 @@
 import 'package:centroloyolapp/database/database.dart';
 import 'package:centroloyolapp/models/estudiante_model.dart';
 import 'package:centroloyolapp/pages/add_estudiante.dart';
+import 'package:centroloyolapp/pages/home.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -77,7 +78,7 @@ class _HomeEstudiantePageState extends State<HomeEstudiantePage>{
               color: Theme.of(context).primaryColor,
             ),
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> MyHomePage(title: 'Centro Loyola'),));
             },
           )
         ],
