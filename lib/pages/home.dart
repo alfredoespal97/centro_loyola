@@ -100,8 +100,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: CircularProgressIndicator(),
             );
           }
-
+          
           //final int completeRegistroCount=snapshot.data!.where((Registro registro)=>registro.id!=null).toList.length;
+
+         // final int completeRegistroCount=snapshot.data!.where((Registro registro)=>registro.id!=null).toList.length;
+
 
         return ListView.builder(
             padding: EdgeInsets.symmetric(vertical: 80.0),
@@ -121,12 +124,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 10.0,),
+
                         Text(
                           '${snapshot.data!.length}', style:
                         TextStyle(color: Colors.blue,
                             fontSize: 20.0,
                             fontWeight: FontWeight.w600),
                         ),
+
                       ]
                   ),
                 );
