@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'pages/home.dart';
 
 void main() {
+  Get.put(GlobalController());
+  Get.lazyPut(()=>GlobalController());
   runApp(const MyApp());
 }
 
@@ -43,12 +45,12 @@ class _MyAppState extends State<MyApp> {
         // home: MyHomePage(title: 'Centro Loyola'),
         initialRoute: '/',
         getPages: [
-          GetPage(name: '/', page: () => MyHomePage(title: 'Centro Loyola')),
+          GetPage(name: '/', page: () => MyHomePage()),
           // GetPage(name: '/', page: () => MyDashBoard(), binding: DashBoardBinding()),
           // GetPage(name: '/home', page: () => const HomePage()),
           GetPage(name: '/add_registro', page: () => AddRegistroPage()),
-          GetPage(name: '/add_estudiante', page: () => AddEstudiantePage()),
-          GetPage(name: '/list_estudiante', page: () => HomeEstudiantePage()),
+          //GetPage(name: '/add_estudiante', page: () => AddEstudiantePage()),
+         // GetPage(name: '/list_estudiante', page: () => HomeEstudiantePage(registro: null,)),
         ]);
   }
 }

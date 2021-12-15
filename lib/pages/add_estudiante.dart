@@ -1,22 +1,24 @@
 import 'package:centroloyolapp/database/database.dart';
 import 'package:centroloyolapp/models/estudiante_model.dart';
+import 'package:centroloyolapp/models/registro_model.dart';
 import 'package:centroloyolapp/pages/home_estudiante.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AddEstudiantePage extends StatefulWidget{
-  final int? id_registro;
+  final int id_registro;
   final Estudiante? estudiante;
   final Function? updateEstudianteList;
 
-  AddEstudiantePage({this.estudiante, this.updateEstudianteList, this.id_registro});
+  AddEstudiantePage({this.estudiante, this.updateEstudianteList, required this.id_registro});
 
   @override
   State<StatefulWidget> createState() => _AddEstudiantePageState();
   }
 
 class _AddEstudiantePageState extends State<AddEstudiantePage> {
-
+  late int regis;
   final _formKey=GlobalKey<FormState>();
 
   String _nombre='';
@@ -34,7 +36,7 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
   @override
   void initState(){
     super.initState();
-
+    regis=widget.id_registro;
     if(widget.estudiante != null){
       _nombre=widget.estudiante!.nombre!;
       _apellidos=widget.estudiante!.apellidos!;
@@ -45,7 +47,6 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
       _numeroOtro=widget.estudiante!.numero_otro!;
       _direccion=widget.estudiante!.direccion!;
       _nota=widget.estudiante!.nota!;
-      _idRegistro=widget.id_registro!;
       setState(() {
         titleText='Actualiazar Estudiante';
       });
@@ -59,7 +60,8 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
 
   _delete(){
     DatabaseHelper.instance.deleteEstudiante(widget.estudiante!.id!);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeEstudiantePage()));
+    Get.off(HomeEstudiantePage(id_registro: regis,));
+    //Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomeEstudiantePage()));
     widget.updateEstudianteList!();
   }
 
@@ -90,11 +92,7 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
 //              builder: (_) => HomeEstudiantePage()
 //          ),
 //        );
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(
-        builder: (_)=>HomeEstudiantePage()
-        ),(route) => false
-        );
+        Get.off(HomeEstudiantePage(id_registro: regis,));
       }
       else{
         estudiante.id=widget.estudiante!.id;
@@ -105,11 +103,7 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
 //              builder: (_) => HomeEstudiantePage()
 //          ),
 //        );
-        Navigator.pushAndRemoveUntil(context,
-        MaterialPageRoute(
-        builder: (_)=>HomeEstudiantePage()
-        ),(route) => false
-        );
+        Get.off(HomeEstudiantePage(id_registro: regis,));
       }
 
       widget.updateEstudianteList!();
@@ -129,7 +123,8 @@ class _AddEstudiantePageState extends State<AddEstudiantePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onTap: ()=>Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> HomeEstudiantePage(),),(route) => false),
+                  onTap: ()=>Get.offAll(HomeEstudiantePage(id_registro: regis,)),
+                      //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> HomeEstudiantePage(),),(route) => false),
                   child: Icon(
                     Icons.arrow_back,
                     size: 30.0,

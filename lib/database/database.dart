@@ -106,6 +106,20 @@ class DatabaseHelper{
     return registroList;
   }
 
+
+  Future<Registro> getRegistroByID(int idRegistro) async{
+    Database? db= await this.db;
+    final List<Map<String,dynamic>> result= await db!.query(registroTable,where: "${colId} = ?",whereArgs: [idRegistro]);
+    final List<Map<String,dynamic>> registroMapList= result;
+    final List<Registro> registroList=[];
+
+    registroMapList.forEach((registroMap){
+      registroList.add(Registro.fromMap(registroMap));
+    });
+
+    return Registro.fromMap(registroMapList.first);
+  }
+
   Future<int> insertRegistro(Registro registro) async{
     Database? db = await this.db;
     final int result= await db!.insert(
@@ -159,6 +173,19 @@ class DatabaseHelper{
 
     return estudianteList;
   }
+
+  Future<List<Estudiante>> getEstudianteListByRegistro(int id_registro) async{
+    final List<Map<String,dynamic>> estudianteMapList= await getEstudianteMapList();
+
+    final List<Estudiante> estudianteList=[];
+
+    estudianteMapList.forEach((estudianteMap){
+      estudianteList.add(Estudiante.fromMap(estudianteMap));
+    });
+
+    return estudianteList;
+  }
+  
 
   Future<int> insertEstudiante(Estudiante estudiante) async{
     Database? db = await this.db;

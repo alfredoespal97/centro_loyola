@@ -4,9 +4,10 @@ import 'package:centroloyolapp/pages/add_registro.dart';
 import 'package:centroloyolapp/pages/home_estudiante.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
+  MyHomePage({Key? key}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -17,7 +18,6 @@ class MyHomePage extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
-  final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -57,7 +57,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 fontSize: 12.0,
                 color: Theme.of(context).primaryColor,
               ),),
-              onTap:()=>Navigator.push(context, CupertinoPageRoute(builder: (_)=> HomeEstudiantePage(idRegistro: registro.id))),
+              onTap:()=>Get.to(()=>HomeEstudiantePage(id_registro: registro.id!)),
+                 // Navigator.push(context, CupertinoPageRoute(builder: (_)=> HomeEstudiantePage(registro: registro))),
 //              trailing: Checkbox(
 //                onChanged: (value){
 //                  print(value);
@@ -80,9 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
         onPressed: (){
-          Navigator.push(context,CupertinoPageRoute(builder: (_)=>AddRegistroPage(
+         Get.to( ()=>AddRegistroPage(
             updateRegistroList: _updateRegistroList,
-          ),));
+          ),);
         },
         child: Icon(Icons.add),
 
