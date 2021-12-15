@@ -2,6 +2,7 @@ import 'package:centroloyolapp/database/database.dart';
 import 'package:centroloyolapp/models/registro_model.dart';
 import 'package:centroloyolapp/pages/home.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class AddRegistroPage extends StatefulWidget {
   final Registro? registro;
@@ -48,7 +49,8 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
 
   _delete(){
   DatabaseHelper.instance.deleteRegistro(widget.registro!.id!);
-  Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MyHomePage(title: 'Centro Loyola',)));
+  Get.off(MyHomePage());
+  //Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MyHomePage()));
   widget.updateRegistroList!();
 }
 
@@ -62,22 +64,25 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
       if(widget.registro ==null){
           DatabaseHelper.instance.insertRegistro(registro);
 
-          Navigator.pushReplacement(
-            context,
-           MaterialPageRoute(
-            builder: (_)=>MyHomePage(title: 'Centro Loyola',)
-          ),
-          );
+//          Navigator.pushReplacement(
+//            context,
+//           MaterialPageRoute(
+//            builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+//          ),
+//          );
+        Get.off(MyHomePage());
+
       }
       else{
           registro.id=widget.registro!.id;
           DatabaseHelper.instance.updateRegistro(registro);
-          Navigator.pushReplacement(
-            context,
-              MaterialPageRoute(
-                builder: (_)=>MyHomePage(title: 'Centro Loyola',)
-            ),
-          );
+//          Navigator.pushReplacement(
+//            context,
+//              MaterialPageRoute(
+//                builder: (_)=>MyHomePage(title: 'Centro Loyola',)
+//            ),
+//          );
+        Get.off(MyHomePage());
       }
 
       widget.updateRegistroList!();
@@ -98,7 +103,8 @@ class _AddRegistroPageState extends State<AddRegistroPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 GestureDetector(
-                  onTap: ()=>Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> MyHomePage(title: 'Centro Loyola'),)),
+                  onTap: ()=> Get.off(MyHomePage()),
+                      //Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=> MyHomePage(),),(route) => false),
                   child: Icon(
                     Icons.arrow_back,
                     size: 30.0,

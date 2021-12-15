@@ -50,11 +50,41 @@ class DatabaseHelper{
   }
 
   void _createDb(Database db, int version) async{
-      await db.execute(
-        'CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT ) '
-            'CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER TEXT, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE )'
 
-      );
+    Batch batch = db.batch();
+
+    // drop first
+
+//    batch.execute("DROP TABLE IF EXISTS $registroTable ;");
+//    batch.execute("DROP TABLE IF EXISTS $estudianteTable ;");
+    // then create again
+    batch.execute("CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT )");
+    batch.execute("CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE )");
+
+    List<dynamic> result = await batch.commit();
+
+//      await db.execute(
+//        'CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT );'
+//      );
+//      await db.execute(
+//          'CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE );'
+//      );
+  }
+
+  void _onUpgrade( Database db, int oldVersion, int newVersion ) async {
+
+    Batch batch = db.batch();
+
+    // drop first
+
+    batch.execute("DROP TABLE IF EXISTS $registroTable ;");
+    batch.execute("DROP TABLE IF EXISTS $estudianteTable ;");
+    // then create again
+    batch.execute("CREATE TABLE $registroTable($colId INTEGER PRIMARY KEY AUTOINCREMENT, $colNombre TEXT, $colGrado TEXT, $colCurso TEXT )");
+    batch.execute("CREATE TABLE $estudianteTable($colIdEst INTEGER PRIMARY KEY AUTOINCREMENT, $colNombreEst TEXT, $colApellidos TEXT, $colEdad TEXT, $colEscuela TEXT, $colNumeroPadre TEXT, $colNumeroMadre TEXT, $colNumeroOtro TEXT, $colDireccion TEXT, $colNota TEXT, $colIdRegistro INTEGER, FOREIGN KEY($colIdRegistro) REFERENCES $registroTable($colIdRegistro) ON DELETE CASCADE )");
+
+    List<dynamic> result = await batch.commit();
+
   }
 
     //// Registro ////
@@ -74,6 +104,20 @@ class DatabaseHelper{
     });
 
     return registroList;
+  }
+
+
+  Future<Registro> getRegistroByID(int idRegistro) async{
+    Database? db= await this.db;
+    final List<Map<String,dynamic>> result= await db!.query(registroTable,where: "${colId} = ?",whereArgs: [idRegistro]);
+    final List<Map<String,dynamic>> registroMapList= result;
+    final List<Registro> registroList=[];
+
+    registroMapList.forEach((registroMap){
+      registroList.add(Registro.fromMap(registroMap));
+    });
+
+    return Registro.fromMap(registroMapList.first);
   }
 
   Future<int> insertRegistro(Registro registro) async{
@@ -129,6 +173,19 @@ class DatabaseHelper{
 
     return estudianteList;
   }
+
+  Future<List<Estudiante>> getEstudianteListByRegistro(int id_registro) async{
+    final List<Map<String,dynamic>> estudianteMapList= await getEstudianteMapList();
+
+    final List<Estudiante> estudianteList=[];
+
+    estudianteMapList.forEach((estudianteMap){
+      estudianteList.add(Estudiante.fromMap(estudianteMap));
+    });
+
+    return estudianteList;
+  }
+  
 
   Future<int> insertEstudiante(Estudiante estudiante) async{
     Database? db = await this.db;
